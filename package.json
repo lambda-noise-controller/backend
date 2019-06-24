@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/lambda-noise-controller/backend#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "knex": "^0.17.6",
     "sqlite3": "^4.0.9"
