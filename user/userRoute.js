@@ -25,7 +25,14 @@ function register(req, res) {
   user.password = hash;
 
   Users.add(user)
-    .then(creds => res.status(201).json(creds))
+    .then(creds =>
+      res
+        .status(201)
+        .json({
+          message: `${creds.username} has been created`,
+          created_at: `${creds.created_at}`
+        })
+    )
     .catch(err => {
       res.status(500).json(err);
       // console.log(err);
