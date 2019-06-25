@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const Users = require("./userModel");
 const jwt = require("jsonwebtoken");
-const secret = require("../secret");
+const secret = require("../config/secret");
 const { authenticate } = require("../auth/authenticate");
 
 module.exports = server => {
@@ -26,12 +26,10 @@ function register(req, res) {
 
   Users.add(user)
     .then(creds =>
-      res
-        .status(201)
-        .json({
-          message: `${creds.username} has been created`,
-          created_at: `${creds.created_at}`
-        })
+      res.status(201).json({
+        message: `${creds.username} has been created`,
+        created_at: `${creds.created_at}`
+      })
     )
     .catch(err => {
       res.status(500).json(err);
