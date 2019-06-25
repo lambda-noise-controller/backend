@@ -1,40 +1,68 @@
-const router = require("express").Router();
-const userModel = require("./userModel");
+const bcrypt = require("bcryptjs");
+const Users = require("../User/userModel");
+const jwt = require("jsonwebtoken");
+const secret = require("../secret");
+const { authenticate } = require("../auth/authenticate");
 
-router.get("/", (req, res) => {
-  userModel
-    .find()
+module.exports = server => {
+  server.post("/api/register", register);
+  server.post("/api/login", login);
+  server.get("/api/accounts", authenticate, getAccounts);
+};
+
+function getAccounts(req, res) {
+  Users.find()
     .then(users => {
       res.status(200).json(users);
       console.log(users);
     })
     .catch(err => console.log(err));
-}); //working
+}
 
-router.delete("/:id", (req, res) => {
-  userModel
-    .destroy(req.params.id)
-    .then(deletedUser => {
-      if (deletedUser > 0) {
-        res.status(200).json({ "deleted users": deletedUser });
+function register(req, res) {
+  let user = req.body;
+  const hash = bcrypt.hashSync(user.password, 12);
+  user.password = hash;
+
+  Users.add(user)
+    .then(creds => res.status(201).json(creds))
+    .catch(err => {
+      res.status(500).json(err);
+      // console.log(err);
+    });
+}
+
+function login(req, res) {
+  let { username, password } = req.body;
+
+  Users.findBy({ username })
+    .first()
+    .then(user => {
+      if (user && bcrypt.compareSync(password, user.password)) {
+        const token = generateToken(user);
+
+        res
+          .status(200)
+          .json({ messge: `Welcome ${user.username}, have a token`, token });
       } else {
-        res.status(404).json({ error: "user not found" });
+        res.status(401).json({ message: "Invalid Creds Bro" });
       }
     })
     .catch(err => {
-      res.status(500).json({ success: false, err });
+      res.status(500).json(err);
       // console.log(err);
     });
-}); //working
+}
 
-router.post("/", (req, res) => {
-  userModel
-    .add(req.body)
-    .then(userAdded => res.status(200).json(userAdded))
-    .catch(err => {
-      res.status(500).json({ success: false, message: err });
-      // console.log(err);
-    });
-}); //working
+function generateToken(user) {
+  const payload = {
+    subject: user.id,
+    username: user.username
+  };
 
-module.exports = router;
+  const options = {
+    expiresIn: "4h"
+  };
+
+  return jwt.sign(payload, secret.jwtSecret, options);
+}
