@@ -8,27 +8,31 @@ module.exports = {
   destroy
 };
 
-const table = database("User");
-
 function find() {
-  return table.select("user_name", "password", "id");
+  return database("User").select("username", "password", "id");
 }
 
 function findBy(filter) {
-  return table.where(filter);
+  return database("User").where(filter);
 }
 
 function findById(id) {
-  return table.where({ id });
+  return database("User")
+    .where({ id })
+    .first();
 }
 
 function add(user) {
-  return table.insert(user).then(ids => {
-    const [id] = ids;
-    return findById(id);
-  });
+  return database("User")
+    .insert(user, "id")
+    .then(ids => {
+      const [id] = ids;
+      return findById(id);
+    });
 }
 
 function destroy(id) {
-  return table.where(id).del();
+  return database("User")
+    .where({ id: id })
+    .del();
 }

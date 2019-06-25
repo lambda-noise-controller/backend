@@ -7,6 +7,12 @@ module.exports = {
     connection: {
       filename: "./data/sqlite3.db3"
     },
+    pool: {
+      //SQLite will not enforce foreign key by default
+      afterCreate: (conn, done) => {
+        conn.run("PRAGMA foreign_keys = ON", done);
+      }
+    },
     migrations: {
       directory: "./data/migrations"
     },
