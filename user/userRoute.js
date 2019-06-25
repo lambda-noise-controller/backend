@@ -8,6 +8,8 @@ module.exports = server => {
   server.post("/api/register", register);
   server.post("/api/login", login);
   server.get("/api/accounts", authenticate, getAccounts);
+  server.get("/api/classrooms/:id", authenticate, getClassroom);
+  server.post("/api/classrooms/", authenticate, addClassroom);
 };
 
 function getAccounts(req, res) {
@@ -17,6 +19,28 @@ function getAccounts(req, res) {
       console.log(users);
     })
     .catch(err => console.log(err));
+}
+
+function getClassroom(req, res) {
+  Users.findClassById(req.params.id)
+    .then(users => {
+      res.status(200).json(users);
+      console.log(users);
+    })
+    .catch(err => console.log(err));
+}
+
+function addClassroom(req, res) {
+  Users.addClass(user)
+    .then(classroom =>
+      res.status(201).json({
+        message: `${classroom.classroom} has been created`
+      })
+    )
+    .catch(err => {
+      res.status(500).json(err);
+      // console.log(err);
+    });
 }
 
 function register(req, res) {

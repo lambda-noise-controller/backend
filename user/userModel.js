@@ -5,7 +5,9 @@ module.exports = {
   findById,
   find,
   findBy,
-  destroy
+  destroy,
+  findClassById,
+  addClass
 };
 
 function find() {
@@ -35,4 +37,21 @@ function destroy(id) {
   return database("User")
     .where({ id: id })
     .del();
+}
+
+/************** Classroom Model *********************/
+
+function findClassById(id) {
+  return database("Classroom")
+    .where({ id })
+    .first();
+}
+
+function addClass(classroom) {
+  return database("Classroom")
+    .insert(classroom, "id")
+    .then(ids => {
+      const [id] = ids;
+      return findClassById(id);
+    });
 }
