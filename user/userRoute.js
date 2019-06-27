@@ -31,6 +31,7 @@ function getClassroom(req, res) {
 }
 
 function addClassroom(req, res) {
+  let user = req.body;
   Users.addClass(user)
     .then(classroom =>
       res.status(201).json({
