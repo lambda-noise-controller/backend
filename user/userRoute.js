@@ -73,7 +73,10 @@ function login(req, res) {
 
         res
           .status(200)
-          .json({ messge: `Welcome ${user.username}, have a token`, token });
+          .json({
+            message: `Welcome ${(user.username, user.id)}, have a token`,
+            token
+          });
       } else {
         res.status(401).json({ message: "Invalid Creds Bro" });
       }

@@ -42,9 +42,8 @@ function destroy(id) {
 /************** Classroom Model *********************/
 
 function findClassById(id) {
-  return database("Classroom")
-    .where({ id })
-    .first();
+  return database("Classroom").where({ teacher_id: id });
+  // .first();
 }
 
 function addClass(classroom) {
