@@ -30,7 +30,7 @@ The _Database Schemas_ for the `user` and `classroom` resources are:
 | timer      | integer          | optional                                            |
 | teacher_id | unsigned integer | required, must be the `id` of an existing `user`    |
 
-## Api Routes
+##### Api Routes
 
 | CRUD            | ADDRESS                                                      |
 | --------------- | ------------------------------------------------------------ |
